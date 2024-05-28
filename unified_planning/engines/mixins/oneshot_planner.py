@@ -67,6 +67,10 @@ class OneshotPlannerMixin(ABC):
         `timeout` or `output_stream` are not `None` and the planner ignores them.
         """
         assert isinstance(self, up.engines.engine.Engine)
+        
+        if problem.has_inheritance() :
+          print ("REMOVING ACTION INHERITANCE")
+          problem.remove_action_inheritance()    
         problem_kind = problem.kind
         if not self.skip_checks and not self.supports(problem_kind):
             msg = f"We cannot establish whether {self.name} can solve this problem!"

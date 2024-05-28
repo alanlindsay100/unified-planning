@@ -655,6 +655,19 @@ class Problem(  # type: ignore[misc]
         """
         self.add_trajectory_constraint(self._env.expression_manager.Always(invariant))
 
+    def has_inheritance(self):
+        for action in self._actions:
+            try:
+                if not action._super == None:
+                    return True
+            except:
+                pass
+        return False
+
+    def remove_action_inheritance(self):
+        self._actions = list(map(lambda a: a.compile_action(), self._actions))
+        
+
     def _kind_factory(self) -> "_KindFactory":
         """Returns an intermediate view for the kind computation.
         Subclasses can use the result of this method to update the kind"""
@@ -665,7 +678,8 @@ class Problem(  # type: ignore[misc]
         )
 
         for action in self._actions:
-            factory.update_problem_kind_action(action)
+            for action_chain_entry in action.gather_supers():
+              factory.update_problem_kind_action(action_chain_entry)
         if len(self._timed_effects) > 0:
             factory.kind.set_time("CONTINUOUS_TIME")
             factory.kind.set_time("TIMED_EFFECTS")

@@ -33,6 +33,8 @@ from typing import Any, Dict, List, Set, Union, Optional, Iterable
 from collections import OrderedDict
 
 
+LOG=True
+
 class Action(ABC):
     """This is the `Action` interface."""
 
@@ -163,9 +165,11 @@ class InstantaneousAction(Action):
         _name: str,
         _parameters: Optional["OrderedDict[str, up.model.types.Type]"] = None,
         _env: Optional[Environment] = None,
+        _super: Optional["InstantaneousActions|List"] = None,
         **kwargs: "up.model.types.Type",
     ):
         Action.__init__(self, _name, _parameters, _env, **kwargs)
+        self._super = _super
         self._preconditions: List["up.model.fnode.FNode"] = []
         self._effects: List[up.model.effect.Effect] = []
         self._simulated_effect: Optional[up.model.effect.SimulatedEffect] = None
@@ -202,6 +206,71 @@ class InstantaneousAction(Action):
             s.append(f"    simulated effect = {self._simulated_effect}\n")
         s.append("  }")
         return "".join(s)
+
+    """def gather_supers(self):
+      al = [self]
+      while not al[0]._super == None:
+        al.insert(0, al[0]._super)
+      return al"""
+
+    def dfs(self, a, hierarchy, tab = 0):
+        tab=self.early_visit(a, tab)
+        for sa in self.get_supers(a):
+            if LOG:
+                print("\n"+tab*" ", end='')
+            self.dfs(sa, hierarchy, tab)
+        if LOG:
+            print ("")
+        self.late_visit(a, hierarchy)
+  
+    def get_supers(self, a):
+        if a._super == None:
+            return []
+        if isinstance (a._super, Action):
+            return [a._super]
+        return a._super
+
+    def early_visit(self, a, tab):
+        s = str(a.name)
+        if len(self.get_supers(a)) > 0:
+          s += " - "
+        if LOG:
+          print (s, end='')
+        return tab + len(s)
+
+    def late_visit(self, a, hierarchy):
+        hierarchy.append(a)
+    
+    def gather_supers(self):
+      hierarchy = list()
+      self.dfs(self, hierarchy)
+      return hierarchy
+
+    def compile_preconditions(self, compiled_a, action_chain):
+      for a in action_chain:
+        for prec in a.preconditions:
+          compiled_a.add_precondition(prec)
+    def compile_effects(self, compiled_a, action_chain):
+      for a in action_chain:
+        compiled_a._effects += [eff.clone() for eff in a.effects]
+    
+    def compile_parameters(self, action_chain):
+      return OrderedDict((param_name, param.type) for a in action_chain for param_name, param in a._parameters.items())
+    
+    def get_action_hierarchy(self):
+      action_chain = self.gather_supers()
+      print ("->".join(map(lambda a: a.name, action_chain)))
+      
+    def compile_action(self):
+      if self._super == None:
+        return self
+      action_chain = self.gather_supers()
+      parameters = self.compile_parameters(action_chain)
+      ca = InstantaneousAction(self._name, parameters, self._environment, None)
+      preconditions = self.compile_preconditions(ca, action_chain)
+      effects = self.compile_effects(ca, action_chain)
+      return ca
+
 
     def __eq__(self, oth: object) -> bool:
         if isinstance(oth, InstantaneousAction):

@@ -180,6 +180,7 @@ class PDDLGrammar:
             Suppress("(")
             + ":action"
             - set_results_name(name, "name")
+            #+ Optional(":super" - set_results_name(nested_expr(), "super"))
             + ":parameters"
             - Suppress("(")
             + parameters
