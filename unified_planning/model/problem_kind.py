@@ -36,6 +36,7 @@ FEATURES = {
         "SCHEDULING",
         "TAMP",
     ],
+    "ACTION_INHERITANCE": ["INDEPENDENT_ACTION_DECLARATIONS","ACTION_INHERITANCE"],
     "PROBLEM_TYPE": ["SIMPLE_NUMERIC_PLANNING", "GENERAL_NUMERIC_PLANNING"],
     "TIME": [
         "CONTINUOUS_TIME",
@@ -328,6 +329,10 @@ classical_kind.set_typing("FLAT_TYPING")
 classical_kind.set_conditions_kind("NEGATIVE_CONDITIONS")
 classical_kind.set_conditions_kind("DISJUNCTIVE_CONDITIONS")
 classical_kind.set_conditions_kind("EQUALITIES")
+inheritance_kind = classical_kind.clone()
+classical_kind.set_action_inheritance("INDEPENDENT_ACTION_DECLARATIONS")
+
+inheritance_kind.set_action_inheritance("ACTION_INHERITANCE")
 
 full_classical_kind = ProblemKind(version=LATEST_PROBLEM_KIND_VERSION)
 full_classical_kind.set_problem_class("ACTION_BASED")
@@ -338,6 +343,7 @@ full_classical_kind.set_conditions_kind("EQUALITIES")
 full_classical_kind.set_conditions_kind("EXISTENTIAL_CONDITIONS")
 full_classical_kind.set_conditions_kind("UNIVERSAL_CONDITIONS")
 full_classical_kind.set_effects_kind("CONDITIONAL_EFFECTS")
+full_classical_kind.set_action_inheritance("INDEPENDENT_ACTION_DECLARATIONS")
 
 object_fluent_kind = ProblemKind(version=LATEST_PROBLEM_KIND_VERSION)
 object_fluent_kind.set_fluents_type("OBJECT_FLUENTS")

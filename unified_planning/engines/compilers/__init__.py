@@ -24,6 +24,9 @@ from unified_planning.engines.compilers.disjunctive_conditions_remover import (
 from unified_planning.engines.compilers.state_invariants_remover import (
     StateInvariantsRemover,
 )
+from unified_planning.engines.compilers.action_inheritance_compiler import (
+    ActionInheritanceCompiler,
+)
 from unified_planning.engines.compilers.grounder import Grounder, GrounderHelper
 from unified_planning.engines.compilers.quantifiers_remover import QuantifiersRemover
 from unified_planning.engines.compilers.negative_conditions_remover import (

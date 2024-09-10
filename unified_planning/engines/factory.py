@@ -87,6 +87,10 @@ DEFAULT_ENGINES = {
         "unified_planning.engines.compilers.state_invariants_remover",
         "StateInvariantsRemover",
     ),
+    "up_action_inheritance_compiler": (
+        "unified_planning.engines.compilers.action_inheritance_compiler",
+        "ActionInheritanceCompiler",
+    ),
     "up_negative_conditions_remover": (
         "unified_planning.engines.compilers.negative_conditions_remover",
         "NegativeConditionsRemover",
@@ -137,9 +141,9 @@ DEFAULT_ENGINES_PREFERENCE_LIST = [
     "symk-opt",
     "pyperplan",
     "pyperplan-opt",
-    "enhsp",
-    "enhsp-opt",
-    "enhsp-any",
+    #"enhsp",
+    #"enhsp-opt",
+    #"enhsp-any",
     "tamer",
     "sequential_plan_validator",
     "sequential_simulator",

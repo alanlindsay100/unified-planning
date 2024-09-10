@@ -146,6 +146,8 @@ class Action(ABC):
             # no attributes of the object have been set.
             # In this case accessing `self._name` or `self._parameters`, would re-invoke __getattr__
             raise AttributeError(f"Action has no attribute '{parameter_name}'")
+        print (parameter_name, parameter_name.__class__)
+        #if parameter_name == "gather_supers": return []
         if parameter_name not in self._parameters:
             raise AttributeError(
                 f"Action '{self.name}' has no attribute or parameter '{parameter_name}'"
@@ -306,6 +308,7 @@ class InstantaneousAction(Action):
         new_instantaneous_action = InstantaneousAction(
             self._name, new_params, self._environment
         )
+        new_instantaneous_action._super = self._super
         new_instantaneous_action._preconditions = self._preconditions[:]
         new_instantaneous_action._effects = [e.clone() for e in self._effects]
         new_instantaneous_action._fluents_assigned = self._fluents_assigned.copy()

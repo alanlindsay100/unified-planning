@@ -987,6 +987,9 @@ class _KindFactory:
                 self.kind.set_time("EXTERNAL_CONDITIONS_AND_EFFECTS")
         self.update_problem_kind_effect(eff)
 
+    def update_problem_kind_inheritance(self, action):
+        self.kind.set_inheritance("ACTION_INHERITANCE")
+
     def update_problem_kind_action(
         self,
         action: "up.model.action.Action",
@@ -1005,6 +1008,11 @@ class _KindFactory:
                 self.update_problem_kind_effect(e)
             if action.simulated_effect is not None:
                 self.kind.set_simulated_entities("SIMULATED_EFFECTS")
+            try:
+                if not action._super == None:
+                    self.update_problem_kind_inheritance(action)
+            except:
+                pass
         elif isinstance(action, up.model.action.DurativeAction):
             self.update_action_duration(action.duration)
             for i, lc in action.conditions.items():
